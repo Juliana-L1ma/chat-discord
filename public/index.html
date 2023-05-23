@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Chat Node.JS e SOCKET.IO</title>
+</head>
+
+<body>
+   
+
+    <main class="main">
+
+<!-- Div com o formulário de acesso, para inserir o apelido -->
+<div id='acesso_usuario'>
+<form class="form" id='login'>
+  <div class="form-title"><span>converse com outros gamers</span></div>
+   <div class="title-2"><span>Entrar no chat</span></div>
+   <section class="bg-stars">
+     <span class="star"></span>
+     <span class="star"></span>
+     <span class="star"></span>
+     <span class="star"></span>
+   </section>
+
+   <div class="input-container">
+     <input class="input-pwd" type="text" placeholder='nome de usuário' id='apelido'>
+   </div>
+   <button type="submit" class="submit">
+     <span class="sign-text">Entrar</span>
+   </button>
+</form>
+</div>
+
+
+<!-- Div principal onde fica o painel de mensagens e lista de usuários -->
+<div id='sala_chat'>
+  
+  <select multiple="multiple" id='lista_usuarios'>
+    <option value='' >🟢 online</option>
+  </select>
+
+  <div class="chat-principal">
+    <div class="chat-header">
+      <p class="firstphrase"># chat_da_galera</p> <p class="firstphrase">|</p>
+      <p class="secondphrase"> General chanel for talking in this server. Make sure to follow the <p class="secondphrase" style="color: cornflowerblue;"> #rules!</p></p>
+    </div>
+
+    <div id="historico_mensagens"></div>
+
+      <!-- area que fica os botoes do chat -->
+  <form id='chat' class="chat-input">
+    <input type='text' class="message-input" id='texto_mensagem' name='texto_mensagem' />
+    <button type='submit' id="enviarBTN" class="send-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"></path></svg>
+    </button>
+    
+  </form>
+
+  </div>
+
+</div>
+
+
+    </main>
+
+    <!-- Importar o script do Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+    var socket = io.connect();
+
+
+// Ao enviar uma mensagem
+$("form#chat").submit(function(e){
+  e.preventDefault();
+
+  var mensagem = $(this).find("#texto_mensagem").val();
+  var usuario = $("#lista_usuarios").val(); // Usuário selecionado na lista lateral direita
+
+  // Evento acionado no servidor para o envio da mensagem
+  // junto com o nome do usuário selecionado da lista
+  socket.emit("enviar mensagem", {msg: mensagem, usu: usuario}, function(){
+    $("form#chat #texto_mensagem").val("");
+  });
+});
+
+// Resposta ao envio de mensagens do servidor
+socket.on("atualizar mensagens", function(dados){
+  var mensagem_formatada = $("<p/>").text(dados.msg).addClass(dados.tipo);
+  $("#historico_mensagens").append(mensagem_formatada);
+});
+
+$("form#login").submit(function(e){
+  e.preventDefault();
+
+  // Evento enviado quando o usuário insere um apelido
+  socket.emit("entrar", $(this).find("#apelido").val(), function(valido){
+    if(valido){
+      // Caso não exista nenhum usuário com o mesmo nome, o painel principal é exibido
+      $("#acesso_usuario").hide();
+      $("#sala_chat").show();
+    }else{
+      // Do contrário o campo de mensagens é limpo e é apresentado um alert
+      $("#acesso_usuario").val("");
+      alert("Nome já utilizado nesta sala");
+    }
+  });
+});
+
+// Quando servidor enviar uma nova lista de usuários
+// o select é limpo e reinserida a opção Todos
+// junto de toda a lista de usuários.
+socket.on("atualizar usuarios", function(usuarios){
+  $("#lista_usuarios").empty();
+  $("#lista_usuarios").append("<option value=''>🟢 online</option>");
+    $.each(usuarios, function(indice){
+      var opcao_usuario = $("<option />").text(usuarios[indice]);
+      $("#lista_usuarios").append(opcao_usuario);
+  });
+});
+
+    </script>
+</body>
+
+</html>
