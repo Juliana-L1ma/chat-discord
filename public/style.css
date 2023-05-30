@@ -422,3 +422,84 @@ body{
 }
 /*------------------- fim do footer---------*/
 
+
+/*------------------- CELULAR -------------------*/
+@media only screen and (max-width: 480px) {
+  #acesso_usuario{
+    display: block;
+    width: 200px;
+    padding: 2.2rem;
+    max-width: 350px;
+  }
+  /*------------- começa o chat--------*/
+  
+#sala_chat{ /*div que engloba tuo na tela*/
+	display: none;
+}
+.chat-principal{ /*div que fica o header, footer e meio do chat*/
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 600px;
+  background-size:cover ;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0.5, 0.3, 0.3, 0.3);
+  background-color: #36393F;
+}
+.chat-header {
+  width: 94%;
+  font-size: 10px;
+}
+.firstphrase{
+  font-size: 10px;
+}
+.secondphrase{
+  font-size: 8px;
+ cursor: pointer;
+ }
+
+/*------------- fim do header do chat ----------*/
+
+/*---------------- meio do chat onde aparecerá as mensagens ---------------*/
+#historico_mensagens, #lista_usuarios{
+	background: #3e4147;
+	height: 500px;
+	width:91%;
+  overflow-y: scroll;
+  padding: 20px;
+  font-size: 15px;
+}
+#historico_mensagens{
+  font-size: 15px;
+}
+
+#lista_usuarios{
+  overflow-y: scroll;
+  background-color:#78648f;
+  font-size: 10px;
+  margin-left: 5%;
+	height: 100px;
+	width: 90%;
+}
+
+#historico_mensagens .sistema{
+  width: 100%;
+}
+
+/*-----------------footer do chat -------------*/
+.message-input {
+  height: 20px;
+  flex: 1;
+  font-size: 14px;
+  width: 150px;
+}
+
+.send-button {
+  margin-left: 5px;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+/*------------------- fim do footer---------*/
+}
